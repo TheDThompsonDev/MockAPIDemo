@@ -1,36 +1,32 @@
-import { useEffect, useState } from "react"
-import Spinner from "./spinner.js"
-import "./App.css"
+import "./css/App.css"
+import { ErrorBoundary } from "react-error-boundary"
+import Error from "./components/Error.jsx"
+import Rewards from "./Rewards.jsx"
+import Banking from "./Banking.jsx"
 
 function App() {
-  const [banking, setBanking] = useState([])
-
-  const fetchData = async () => {
-    const result = await fetch("/api/banking")
-    const bankingInfo = await result.json()
-    setBanking(bankingInfo.accounts)
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
   return (
-    <div className="container">
-      {banking.length > 0 ? (
-        <div className="cardContainer">
-          {banking.map(({ id, name, total }) => (
-            <div className="card" key={id}>
-              <div className="named">{name}</div>
-              <div className="cardContent">
-                <div className="totalAmount">${total}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <Spinner />
-      )}
+    <div>
+      <div className="container">
+        <ErrorBoundary
+          fallback={
+            <Error>
+              Uh oh! Something Went Wrong! Sorry For the inconvenience
+            </Error>
+          }
+        >
+          <Banking />
+        </ErrorBoundary>
+        <ErrorBoundary
+          fallback={
+            <Error>
+              Uh oh! Something Went Wrong! Sorry For the inconvenience
+            </Error>
+          }
+        >
+          <Rewards />
+        </ErrorBoundary>
+      </div>
     </div>
   )
 }
